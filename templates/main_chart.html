@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+	<title>Line Chart</title>
+	<script src="static/moment.min.js"></script>
+	<script src="static/Chart.min.js"></script>
+	<script src="static/utils.js"></script>
+	<script src="static/Chart.js"></script>
+	<script src="static/jquery.min.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+<body>
+	<center>
+	<div style="width:700px;height:500px">
+		<canvas id="line_chart"></canvas>
+	</div>
+	</center>
+	<script>
+		var timeFormat = 'MM/DD/YYYY HH:mm:ss';
+		var color = Chart.helpers.color;
+		var ctx = document.getElementById('line_chart').getContext('2d');
+		var myLine = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [{% for item in labels_date %}
+                              "{{item}}",
+                             {% endfor %}],
+				datasets: [{
+					label: 'Positive Sentiment',
+					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.red,
+					fill: false,
+					data: [{% for item in values_ps %}
+                              "{{item}}",
+                             {% endfor %}],
+				}, {
+					label: 'Negative Sentiment',
+					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.blue,
+					fill: false,
+					data: [{% for item in values_negs %}
+                              "{{item}}",
+                             {% endfor %}],
+				}, {
+					label: 'Neutral Sentiment',
+					backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.green,
+					fill: false,
+					data: [{% for item in values_nets %}
+                              "{{item}}",
+                             {% endfor %}],
+				}]
+			},
+			options: {
+				title: {
+					text: 'Chart.js Time Scale'
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							parser: timeFormat,
+							// round: 'day'
+							tooltipFormat: 'll HH:mm'
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						}
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'value'
+						}
+					}]
+				},
+			}
+		});
+
+	</script>
+	<!-- <br> -->
+	<center>
+            <h2>Top 10 Words</h2>
+            <div style="width:700px;height:500px">
+                <canvas id="chart"></canvas>
+            </div>
+	</center>
+	<script>
+		var ctx = document.getElementById("chart");
+		var myChart = new Chart(ctx, {
+				type: 'horizontalBar',
+				data: {
+					labels: [{% for item in labels_words %}
+                              "{{item}}",
+                             {% endfor %}],
+					datasets: [{
+						label: 'count of words',
+						data: [{% for item in values_count %}
+                              "{{item}}",
+                             {% endfor %}],
+						backgroundColor: [
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(54, 162, 235, 0.2)',
+							'rgba(255, 206, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(153, 102, 255, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(54, 162, 235, 0.2)',
+							'rgba(255, 206, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(153, 102, 255, 0.2)'
+						],
+						borderColor: [
+							'rgba(255,99,132,1)',
+							'rgba(54, 162, 235, 1)',
+							'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)',
+							'rgba(153, 102, 255, 1)',
+							'rgba(255, 159, 64, 1)',
+							'rgba(255,99,132,1)',
+							'rgba(54, 162, 235, 1)',
+							'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)',
+							'rgba(153, 102, 255, 1)'
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero:true
+							}
+						}]
+					}
+				}
+		});
+
+		var src_Labels_date = [];
+		var src_Values_ps = [];
+		var src_Values_nets = [];
+		var src_Values_negs = [];
+		var src_Labels_words = [];
+		var src_Values_count = [];
+			setInterval(function(){
+				$.getJSON('/refreshData', {
+				}, function(data) {
+					// src_Labels = data.sLabel;
+					// src_Data = data.sData;
+					src_Labels_date = data.sLabels_date;
+					src_Values_ps = data.sValues_ps;
+					src_Values_nets = data.sValues_nets;
+					src_Values_negs = data.sValues_negs;
+					src_Labels_words = data.sLabels_words;
+					src_Values_count = data.sValues_count;
+				});
+				myChart.data.labels = src_Labels_words;
+				myChart.data.datasets[0].data = src_Values_count;
+				myLine.data.labels = src_Labels_date;
+				myLine.data.datasets[0].data = src_Values_ps;
+				myLine.data.datasets[1].data = src_Values_negs;
+				myLine.data.datasets[2].data = src_Values_nets;
+				myLine.update();
+				myChart.update();
+			},1000);
+	</script>
+</body>
+</html>
+
+
+
+
+
+
