@@ -15,16 +15,10 @@ from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFacto
 factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
 
-# request to get credentials at http://developer.twitter.com
-# consumer_key    = '380RHSlFcfd1MEp1piUDyQt8g'
-# consumer_secret = 'AuqQofbwgLeLGxGZAj6EcTPKNqwDCHuitrcBdaXlyMPCyQUPA8'
-# access_token    = '340918363-za07hjCZBMy0LGAT4Ik6KGg4VztcqaLYGGZBVYji'
-# access_secret   = 'u5DqcyfoYCPOP4gjQM1l38wVCwmHU7XDUTi4zIdPfvdLn'
-
-consumer_key='YHVQYVzSkA6z9IQkZVKRwfNpc'
-consumer_secret='xGOK66tvy9HJ5gp7Ja7HtHIg0EcHesCVfQlQgtzRMvsPwWIDHj'
-access_token ='932203757642727425-NlrXIvB3Chq9D3CmmeBBvjczzbZvsaE'
-access_secret='ZHMfkzDLPkGl6frVCCVwEeCiBmYDrSepiUxSv176dkXfJ'
+consumer_key='*'
+consumer_secret='*'
+access_token ='*'
+access_secret='*'
 
 # we create this class that inherits from the StreamListener in tweepy StreamListener
 class TweetsListener(StreamListener):
